@@ -16,20 +16,20 @@ Backend API for a comprehensive blogging platform featuring Group management, Ro
 
 ## 🔐 API Endpoints Reference
 
-### 1️⃣ Authentication (`/api/v1/auth`)
+### 1️⃣ Authentication (`/auth`)
 | Method | Endpoint | Body (JSON) | Access |
 | :--- | :--- | :--- | :--- |
 | POST | `/register` | `name`, `email`, `password`, `passwordConfirm` | Public |
 | POST | `/login` | `email`, `password` | Public |
 
-### 2️⃣ Users (`/api/v1/users`)
+### 2️⃣ Users (`/users`)
 | Method | Endpoint | Description | Access |
 | :--- | :--- | :--- | :--- |
 | GET | `/me` | Get current user profile | Authenticated |
 | PATCH | `/updateMe` | Update profile info | Authenticated |
 | DELETE | `/deleteMe` | Deactivate account | Authenticated |
 
-### 3️⃣ Groups (`/api/v1/groups`)
+### 3️⃣ Groups (`/groups`)
 | Method | Endpoint | Body (JSON) | Description |
 | :--- | :--- | :--- | :--- |
 | GET | `/` | None | List all groups |
@@ -39,7 +39,7 @@ Backend API for a comprehensive blogging platform featuring Group management, Ro
 | PATCH | `/:groupId/promote` | `userId` | Promote to Admin |
 | PATCH | `/:groupId/demote` | `userId` | Demote from Admin |
 
-### 4️⃣ Posts (`/api/v1/posts`)
+### 4️⃣ Posts (`/posts`)
 | Method | Endpoint | Body (Form-Data) | Description |
 | :--- | :--- | :--- | :--- |
 | GET | `/` | None | Get newsfeed posts |
@@ -48,7 +48,7 @@ Backend API for a comprehensive blogging platform featuring Group management, Ro
 | PATCH | `/:id` | `title`, `content` | Update post |
 | DELETE | `/:id` | None | Delete post |
 
-### 5️⃣ Admin & Super-Admin (`/api/v1/admin`)
+### 5️⃣ Admin & Super-Admin (`/admin`)
 | Method | Endpoint | Access | Description |
 | :--- | :--- | :--- | :--- |
 | GET | `/users` | Super-Admin | List all system users |
