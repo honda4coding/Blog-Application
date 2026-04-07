@@ -9,7 +9,9 @@ const globalErrorHandler = require('./middlewares/errorMiddleware');
 const app = express();
 
 app.use(express.json()); 
-
+app.get('/', (req, res) => {
+  res.status(200).send('Welcome to Blog System API!');
+});
 app.use('/auth', authRouter);
 app.use('/posts', postRouter);
 app.use('/users', userRouter);
