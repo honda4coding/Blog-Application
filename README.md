@@ -1,71 +1,67 @@
-# 🚀 Blog System API (Backend)
+# 🚀 Blog System API 
 
-Welcome to the **Blog System API**! A robust backend solution built with the MERN stack, featuring Group Management, Role-Based Access Control (RBAC), and secure image hosting.
-
----
-
-## 🛠️ Tech Stack
-- **Node.js & Express.js**: Server-side logic.
-- **MongoDB & Mongoose**: Database & Schema modeling.
-- **ImageKit**: Cloud-based image hosting and optimization.
-- **JWT (JSON Web Tokens)**: Secure authentication and authorization.
-- **Vercel**: Production deployment.
+Backend API for a comprehensive blogging platform featuring Group management, Role-Based Access Control (RBAC), and automated Image Hosting.
 
 ---
 
-## 🔐 API Documentation & Endpoints
+## 🛠️ Tech Stack & Features
+- **Runtime**: Node.js & Express.js
+- **Database**: MongoDB (Mongoose ODM)
+- **Authentication**: JWT (JSON Web Tokens) with Bearer Token support.
+- **File Storage**: ImageKit.io integration for cloud image hosting.
+- **Validation**: Middleware-based validation using **Joi**.
+- **Access Control**: Multi-level RBAC (Super-Admin, Admin, User).
 
-> **Note:** All protected routes require a Bearer Token in the headers:  
-> `Authorization: Bearer <your_jwt_token>`
+---
 
-### 1️⃣ Authentication (`/api/auth`)
-| Method | Endpoint | Body (JSON) | Description |
+## 🔐 API Endpoints Reference
+
+### 1️⃣ Authentication (`/api/v1/auth`)
+| Method | Endpoint | Body (JSON) | Access |
 | :--- | :--- | :--- | :--- |
-| POST | `/register` | `name`, `email`, `password`, `passwordConfirm` | Create a new account |
-| POST | `/login` | `email`, `password` | Get JWT token |
+| POST | `/register` | `name`, `email`, `password`, `passwordConfirm` | Public |
+| POST | `/login` | `email`, `password` | Public |
 
-### 2️⃣ Groups (`/api/groups`)
-| Method | Endpoint | Body (JSON) | Description |
-| :--- | :--- | :--- | :--- |
-| POST | `/` | `name`, `description` | Create a new group (Owner) |
-| GET | `/` | None | Get all groups |
-| POST | `/:id/join` | None | Join a specific group |
-| DELETE | `/:id/leave`| None | Leave a group |
-
-### 3️⃣ Posts (`/api/posts`)
-| Method | Endpoint | Body (JSON) | Description |
-| :--- | :--- | :--- | :--- |
-| POST | `/` | `title`, `content`, `image`, `group` | Create post (Multipart or Base64) |
-| GET | `/` | None | Newsfeed (Posts from joined groups) |
-| PATCH | `/:id` | `title` or `content` | Update your own post |
-| DELETE | `/:id` | None | Delete post (Owner or Admin) |
-
-### 4️⃣ Admin Actions (`/api/admin`)
+### 2️⃣ Users (`/api/v1/users`)
 | Method | Endpoint | Description | Access |
 | :--- | :--- | :--- | :--- |
-| DELETE | `/groups/:groupId/users/:userId` | Kick user from group | Group Admin |
-| DELETE | `/posts/:id` | Moderation: Delete any post | Admin/SuperAdmin |
+| GET | `/me` | Get current user profile | Authenticated |
+| PATCH | `/updateMe` | Update profile info | Authenticated |
+| DELETE | `/deleteMe` | Deactivate account | Authenticated |
+
+### 3️⃣ Groups (`/api/v1/groups`)
+| Method | Endpoint | Body (JSON) | Description |
+| :--- | :--- | :--- | :--- |
+| GET | `/` | None | List all groups |
+| POST | `/` | `name`, `description` | Create new group |
+| POST | `/:groupId/add-member` | `userId` | Add member |
+| DELETE | `/:groupId/leave` | None | Leave group |
+| PATCH | `/:groupId/promote` | `userId` | Promote to Admin |
+| PATCH | `/:groupId/demote` | `userId` | Demote from Admin |
+
+### 4️⃣ Posts (`/api/v1/posts`)
+| Method | Endpoint | Body (Form-Data) | Description |
+| :--- | :--- | :--- | :--- |
+| GET | `/` | None | Get newsfeed posts |
+| POST | `/` | `title`, `content`, `image`, `group` | Create post (Auto Upload) |
+| GET | `/my-posts` | None | Get user's own posts |
+| PATCH | `/:id` | `title`, `content` | Update post |
+| DELETE | `/:id` | None | Delete post |
+
+### 5️⃣ Admin & Super-Admin (`/api/v1/admin`)
+| Method | Endpoint | Access | Description |
+| :--- | :--- | :--- | :--- |
+| GET | `/users` | Super-Admin | List all system users |
+| PATCH | `/users/:id/role` | Super-Admin | Update user role |
+| DELETE | `/users/:id` | Admin/Super-Admin | Delete user from system |
 
 ---
 
 ## 📁 Folder Architecture (MVC)
-- `controllers/`: Logic for handling requests and responses.
-- `models/`: Mongoose schemas and data structures.
-- `routes/`: Routing configuration for each module.
-- `middlewares/`: Authentication, Authorization, and Global Error Handling.
-- `utils/`: Helpers (e.g., ImageKit setup, AppError class).
-- `validators/`: Joi/Zod schemas for input validation.
-
----
-
-## ⚙️ Environment Variables
-Create a `.env` file in the root directory:
-```env
-PORT=3000
-DATABASE_URL=your_mongodb_atlas_url
-JWT_SECRET=your_super_secret_key
-JWT_EXPIRES_IN=90d
-
-IMAGEKIT_PUBLIC_KEY=your_public_key
-IMAGEKIT_PRIVATE_KEY=your_private_key
-IMAGEKIT_URL_ENDPOINT=your_endpoint_url
+```text
+controllers/    # Request handling & Business logic
+models/         # Mongoose schemas (User, Post, Group)
+routes/         # API route definitions
+middlewares/    # Auth, RBAC, and Validation
+utils/          # ImageKit setup & AppError helper
+validators/     # Joi schemas for data validation
