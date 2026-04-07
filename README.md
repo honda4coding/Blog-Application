@@ -1,83 +1,71 @@
-# 🚀 Blog System API 
+# 🚀 Blog System API (Backend)
 
-Backend API for a comprehensive blogging platform with Group management and RBAC (Role-Based Access Control).
-
-## 🛠️ Project Structure & Tech Stack
-- **Node.js & Express.js**
-- **MongoDB & Mongoose**
-- **ImageKit** (for image hosting)
-- **JWT** (for authentication)
-- **Vercel** (for deployment)
+Welcome to the **Blog System API**! A robust backend solution built with the MERN stack, featuring Group Management, Role-Based Access Control (RBAC), and secure image hosting.
 
 ---
 
-## 🔐 API Endpoints Reference
+## 🛠️ Tech Stack
+- **Node.js & Express.js**: Server-side logic.
+- **MongoDB & Mongoose**: Database & Schema modeling.
+- **ImageKit**: Cloud-based image hosting and optimization.
+- **JWT (JSON Web Tokens)**: Secure authentication and authorization.
+- **Vercel**: Production deployment.
+
+---
+
+## 🔐 API Documentation & Endpoints
+
+> **Note:** All protected routes require a Bearer Token in the headers:  
+> `Authorization: Bearer <your_jwt_token>`
 
 ### 1️⃣ Authentication (`/api/auth`)
-| Method | Endpoint | Description | Access |
+| Method | Endpoint | Body (JSON) | Description |
 | :--- | :--- | :--- | :--- |
-| POST | `/register` | Create a new account | Public |
-| POST | `/login` | Login and get JWT token | Public |
+| POST | `/register` | `name`, `email`, `password`, `passwordConfirm` | Create a new account |
+| POST | `/login` | `email`, `password` | Get JWT token |
 
 ### 2️⃣ Groups (`/api/groups`)
-| Method | Endpoint | Description | Access |
+| Method | Endpoint | Body (JSON) | Description |
 | :--- | :--- | :--- | :--- |
-| POST | `/` | Create a new group | User |
-| GET | `/` | Get all available groups | User |
-| GET | `/:id` | Get single group details | Member |
-| POST | `/:id/join` | Join a specific group | User |
-| DELETE | `/:id/leave` | Leave a group | Member |
+| POST | `/` | `name`, `description` | Create a new group (Owner) |
+| GET | `/` | None | Get all groups |
+| POST | `/:id/join` | None | Join a specific group |
+| DELETE | `/:id/leave`| None | Leave a group |
 
 ### 3️⃣ Posts (`/api/posts`)
-| Method | Endpoint | Description | Access |
+| Method | Endpoint | Body (JSON) | Description |
 | :--- | :--- | :--- | :--- |
-| POST | `/` | Create a post (Text/Images) | Group Member |
-| GET | `/` | Get newsfeed (Joined groups) | User |
-| GET | `/:id` | Get specific post | User |
-| PATCH | `/:id` | Update your own post | Post Owner |
-| DELETE | `/:id` | Delete your own post | Post Owner |
+| POST | `/` | `title`, `content`, `image`, `group` | Create post (Multipart or Base64) |
+| GET | `/` | None | Newsfeed (Posts from joined groups) |
+| PATCH | `/:id` | `title` or `content` | Update your own post |
+| DELETE | `/:id` | None | Delete post (Owner or Admin) |
 
 ### 4️⃣ Admin Actions (`/api/admin`)
 | Method | Endpoint | Description | Access |
 | :--- | :--- | :--- | :--- |
 | DELETE | `/groups/:groupId/users/:userId` | Kick user from group | Group Admin |
-| PATCH | `/groups/:groupId/permissions` | Modify member permissions | Group Admin |
-| DELETE | `/posts/:id` | Delete any post (Moderation) | Admin/SuperAdmin |
-
-### 5️⃣ Users (`/api/users`)
-| Method | Endpoint | Description | Access |
-| :--- | :--- | :--- | :--- |
-| GET | `/me` | Get current user profile | Authenticated |
-| PATCH | `/update-me` | Update profile info | Authenticated |
+| DELETE | `/posts/:id` | Moderation: Delete any post | Admin/SuperAdmin |
 
 ---
 
-Create a .env file and add:
-
-PORT=3000  ==> your empty port
-DATABASE_URL=mongodb+srv://...
-JWT_SECRET=your_secret_key
-IMAGEKIT_PUBLIC_KEY=...
-IMAGEKIT_PRIVATE_KEY=...
-IMAGEKIT_URL_ENDPOINT=...
-
----
-
-npm start        # Production
-npm run dev      # Development with Nodemon
+## 📁 Folder Architecture (MVC)
+- `controllers/`: Logic for handling requests and responses.
+- `models/`: Mongoose schemas and data structures.
+- `routes/`: Routing configuration for each module.
+- `middlewares/`: Authentication, Authorization, and Global Error Handling.
+- `utils/`: Helpers (e.g., ImageKit setup, AppError class).
+- `validators/`: Joi/Zod schemas for input validation.
 
 ---
 
-### Folder Architecture (MVC)
+## ⚙️ Environment Variables
+Create a `.env` file in the root directory:
+```env
+PORT=3000
+DATABASE_URL=your_mongodb_atlas_url
+JWT_SECRET=your_super_secret_key
+JWT_EXPIRES_IN=90d
 
-controllers/: Request handling & Logic.
-
-models/: Mongoose schemas.
-
-routes/: API route definitions.
-
-middlewares/: Auth & Error handling.
-
-utils/: Reusable helpers (AppError, ImageKit).
-
-validators/: Joi schemas for data validation.
+IMAGEKIT_PUBLIC_KEY=your_public_key
+IMAGEKIT_PRIVATE_KEY=your_private_key
+IMAGEKIT_URL_ENDPOINT=your_endpoint_url
